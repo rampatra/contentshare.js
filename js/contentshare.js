@@ -25,20 +25,27 @@
                     return (option=='string')?encodeURIComponent($.trim(window.getSelection().getRangeAt(0).toString())):window.getSelection().getRangeAt(0);
                 }
                 else if(document.selection){
-                    return (option=='string')?encodeURIComponent($.trim(document.selection.createRange().text())):document.selection.createRange();
+                    return (option=='string')?encodeURIComponent($.trim(document.selection.createRange().text)):document.selection.createRange();
                 }
             },                
             showTooltip : function() {
                 this.clear();
                 if(this.getSelection('string').length < opts.minLength)
                     return;
+                this.preloadShareIcons(opts.shareIcons);
                 var range = this.getSelection();
                 var newNode = document.createElement("mark");
                 range.surroundContents(newNode);
                 $('mark').addClass(opts.className);
-                $('.'+opts.className).tooltipster({trigger:'custom',interactive:true,content:this.getContent()});
+                $('.'+opts.className).tooltipster({trigger:'custom',interactive:true,content:this.getContent(),animation:opts.animation});
                 $('.'+opts.className).tooltipster('show');
-            },                
+            },
+            preloadShareIcons : function(array) {
+                for (var i = 0; i < array.length; i++) {
+                    var img = new Image();
+                    img.src = array[i];
+                }
+            },
             clear : function() {
                 $('.'+opts.className).tooltipster('hide');
                 $('mark').contents().unwrap();
@@ -57,7 +64,8 @@
         shareLinks : ["http://www.facebook.com/sharer.php?s=100&p[url]="+document.URL+"&p[title]="+document.title+"&p[summary]=" , "http://twitter.com/intent/tweet?text="],
         minLength  : 5,
         newTab     : true,
-        className  : "contentshare"        
+        className  : "contentshare",
+        animation  : "grow"
     };
 
 }(jQuery));
